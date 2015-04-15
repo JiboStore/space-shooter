@@ -76,6 +76,7 @@ public sealed class AssetChangeListener : MonoBehaviour {
 	#region Private Methods
 
 	private IEnumerator Start () {
+		Debug.LogFormat ("Data path = {0}", Application.persistentDataPath);
 #if UNITY_EDITOR
 		Log.SetLogger(new UnityLogger());
 #endif
@@ -89,18 +90,21 @@ public sealed class AssetChangeListener : MonoBehaviour {
 
 		var doc = _db.GetExistingDocument ("player_data");
 		if (doc != null) {
-			//We have a record!  Get the high score.
-			var assetName = doc.UserProperties ["ship_data"] as String;
+			//We have a record!  Get the ship data, if possible.
+			string assetName = String.Empty;
+			if(doc.UserProperties.ContainsKey("ship_data")) {
+				assetName = doc.UserProperties ["ship_data"] as String;
+			}
 			StartCoroutine(LoadAsset (assetName));
 		} else {
 			//Create a new record
 			doc = _db.GetDocument("player_data");
 			doc.PutProperties(new Dictionary<string, object> { { "ship_data", String.Empty } });
-			_push = _db.CreatePushReplication (new Uri ("http://127.0.0.1:4984/spaceshooter"));
-			_push.Start();
 		}
 
 		doc.Change += DocumentChanged;
+		_push = _db.CreatePushReplication (new Uri ("http://127.0.0.1:4984/spaceshooter"));
+		_push.Start();
 	}
 
 	private void DocumentChanged (object sender, Document.DocumentChangeEventArgs e)
