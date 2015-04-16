@@ -65,10 +65,14 @@ public sealed class AssetChangeListener : MonoBehaviour {
 	{
 		//Unregister listeners and stop replication
 		var doc = _db.GetExistingDocument ("player_data");
-		doc.Change -= DocumentChanged;
-		_db = null;
-		_pull.Stop ();
-		_pull = null;
+		if (doc != null) {
+			doc.Change -= DocumentChanged;
+		}
+
+		if (_pull != null) {
+			_pull.Stop ();
+			_pull = null;
+		}
 	}
 
 	#endregion
@@ -84,7 +88,7 @@ public sealed class AssetChangeListener : MonoBehaviour {
 		_pull = _db.CreatePullReplication (new Uri ("http://127.0.0.1:4984/spaceshooter"));
 		_pull.Continuous = true;
 		_pull.Start ();
-		while (_pull.Status != ReplicationStatus.Idle) {
+		while (_pull != null && _pull.Status == ReplicationStatus.Active) {
 			yield return new WaitForSeconds(0.5f);
 		}
 

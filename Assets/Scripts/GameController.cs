@@ -76,7 +76,7 @@ public sealed class GameController : MonoBehaviour {
 		var db = AssetChangeListener.UnityCBLManager.GetDatabase("spaceshooter");
 		var pull = db.CreatePullReplication (new Uri ("http://127.0.0.1:4984/spaceshooter"));
 		pull.Start ();
-		while (pull.Status != ReplicationStatus.Stopped) {
+		while (pull.Status == ReplicationStatus.Active) {
 			yield return new WaitForSeconds(0.5f);
 		}
 
