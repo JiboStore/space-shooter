@@ -73,7 +73,7 @@ public sealed class GameController : MonoBehaviour {
 		score = 0;
 
 		//Refresh the player data
-		var db = AssetChangeListener.UnityCBLManager.GetDatabase("spaceshooter");
+		var db = Manager.SharedInstance.GetDatabase("spaceshooter");
 		var pull = db.CreatePullReplication (new Uri ("http://127.0.0.1:4984/spaceshooter"));
 		pull.Start ();
 		while (pull.Status == ReplicationStatus.Active) {
@@ -133,7 +133,7 @@ public sealed class GameController : MonoBehaviour {
 	{
 		Task.Factory.StartNew (() => {
 			//Offload the save logic to the background
-			var db = AssetChangeListener.UnityCBLManager.GetDatabase("spaceshooter");
+			var db = Manager.SharedInstance.GetDatabase("spaceshooter");
 			var doc = db.GetDocument ("player_data");
 			doc.Update(rev => {
 				var props = rev.UserProperties;

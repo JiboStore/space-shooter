@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -23,36 +23,6 @@ public sealed class AssetChangeListener : MonoBehaviour {
 	private Database _db;				//The database object
 
 	public GameObject defaultShip;		//The ship object to use when no alternate is specified
-
-	#endregion
-
-	#region Properties
-
-	/// <summary>
-	/// Gets the default manager for use in Unity
-	/// </summary>
-	/// <remarks>
-	/// Manager.SharedInstance will not work on mobile platforms by
-	/// default, so we will use this instead.  If you have some
-	/// initialization logic that is guaranteed to be called before
-	/// anything else you could set Manager.SharedInstance to this
-	/// value if you like.
-	/// </remarks>
-	static public Manager UnityCBLManager {
-		get {
-			if(_unityCBLManager == null) {
-				var options = Manager.DefaultOptions;
-
-				//Callbacks will happen on the main thread by default with this setting
-				options.CallbackScheduler = UnityMainThreadScheduler.TaskScheduler;
-				_unityCBLManager = new Manager (new DirectoryInfo (Application.persistentDataPath), 
-				                               options);
-			}
-
-			return _unityCBLManager;
-		}
-	}
-	static private Manager _unityCBLManager;
 
 	#endregion
 
@@ -88,8 +58,7 @@ public sealed class AssetChangeListener : MonoBehaviour {
 #elif UNITY_STANDALONE_WIN
 		SQLitePCL.SQLite3Provider.SetDllDirectory (Application.dataPath);
 #endif
-
-		_db = UnityCBLManager.GetDatabase ("spaceshooter");
+		_db = Manager.SharedInstance.GetDatabase ("spaceshooter");
 		_pull = _db.CreatePullReplication (new Uri ("http://127.0.0.1:4984/spaceshooter"));
 		_pull.Continuous = true;
 		_pull.Start ();
