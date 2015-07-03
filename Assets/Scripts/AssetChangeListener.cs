@@ -81,9 +81,14 @@ public sealed class AssetChangeListener : MonoBehaviour {
 
 	private IEnumerator Start () {
 		Debug.LogFormat ("Data path = {0}", Application.persistentDataPath);
+
 #if UNITY_EDITOR
 		Log.SetLogger(new UnityLogger());
+		SQLitePCL.SQLite3Provider.SetDllDirectory (null);
+#elif UNITY_STANDALONE_WIN
+		SQLitePCL.SQLite3Provider.SetDllDirectory (Application.dataPath);
 #endif
+
 		_db = UnityCBLManager.GetDatabase ("spaceshooter");
 		_pull = _db.CreatePullReplication (new Uri ("http://127.0.0.1:4984/spaceshooter"));
 		_pull.Continuous = true;
