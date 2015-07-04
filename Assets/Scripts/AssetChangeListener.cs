@@ -52,7 +52,7 @@ public sealed class AssetChangeListener : MonoBehaviour {
 	private IEnumerator Start () {
 		Debug.LogFormat ("Data path = {0}", Application.persistentDataPath);
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR_WIN
 		Log.SetLogger(new UnityLogger());
 		SQLitePCL.SQLite3Provider.SetDllDirectory (null);
 #elif UNITY_STANDALONE_WIN
