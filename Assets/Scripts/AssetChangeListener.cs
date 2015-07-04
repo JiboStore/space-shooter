@@ -59,7 +59,7 @@ public sealed class AssetChangeListener : MonoBehaviour {
 		SQLitePCL.SQLite3Provider.SetDllDirectory (Application.dataPath);
 #endif
 		_db = Manager.SharedInstance.GetDatabase ("spaceshooter");
-		_pull = _db.CreatePullReplication (new Uri ("http://127.0.0.1:4984/spaceshooter"));
+		_pull = _db.CreatePullReplication (GameController.SYNC_URL);
 		_pull.Continuous = true;
 		_pull.Start ();
 		while (_pull != null && _pull.Status == ReplicationStatus.Active) {

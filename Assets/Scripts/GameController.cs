@@ -15,6 +15,12 @@ using Couchbase.Lite.Unity;
 /// as GUI and score updates, etc.
 /// </summary>
 public sealed class GameController : MonoBehaviour {
+    
+    #region Constants
+
+    public static readonly Uri SYNC_URL = new Uri("http://localhost:4984/spaceshooter");
+
+    #endregion
 
 	#region Member Variables
 
@@ -74,7 +80,7 @@ public sealed class GameController : MonoBehaviour {
 
 		//Refresh the player data
 		var db = Manager.SharedInstance.GetDatabase("spaceshooter");
-		var pull = db.CreatePullReplication (new Uri ("http://127.0.0.1:4984/spaceshooter"));
+        var pull = db.CreatePullReplication (SYNC_URL);
 		pull.Start ();
 		while (pull.Status == ReplicationStatus.Active) {
 			yield return new WaitForSeconds(0.5f);
@@ -143,9 +149,9 @@ public sealed class GameController : MonoBehaviour {
 				return true;
 			});
 
-			var push = db.CreatePushReplication(new Uri("http://localhost:4984/spaceshooter"));
+            var push = db.CreatePushReplication(SYNC_URL);
 			push.Start();
-			while(push.Status != ReplicationStatus.Stopped) {
+			while(push.Status == ReplicationStatus.Active) {
 				Thread.Sleep(100);
 			}
 
