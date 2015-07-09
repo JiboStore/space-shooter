@@ -54,9 +54,6 @@ public sealed class AssetChangeListener : MonoBehaviour {
 
 #if UNITY_EDITOR_WIN
 		Log.SetLogger(new UnityLogger());
-		SQLitePCL.SQLite3Provider.SetDllDirectory (null);
-#elif UNITY_STANDALONE_WIN
-		SQLitePCL.SQLite3Provider.SetDllDirectory (Application.dataPath);
 #endif
 		_db = Manager.SharedInstance.GetDatabase ("spaceshooter");
 		_pull = _db.CreatePullReplication (GameController.SYNC_URL);
